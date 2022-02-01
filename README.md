@@ -80,24 +80,29 @@ dependencies {
 
     implementation "io.coil-kt:coil:1.3.2"
 
-    def okhttp_version = "4.9.3"
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:okhttp:4.9.3"
 
     implementation "org.jmdns:jmdns:3.5.7"
 }
 ```
+
 # Usage
 
-In your AppDelegate you must call the configure method with your SDK Key
+*Important: The key used in the documentation and the sample is very limited key, you must use yours to fully use the TchekSDK.*
 
-```
-let builder = TchekBuilder(userId: "your_user_id", ui: { builder in
-	if AppDelegate.CUSTOM_UI {
-		builder.alertButtonText = .orange
-		builder.accentColor = .orange
-	}
-})
-TchekSdk.configure(key: "my-tchek-sdk-key", builder: builder)
+In order to use the TchekSdk, you must first call the `configure()` method as follows
+
+```kotlin
+val builder = TchekBuilder(userId = "SAMPLE_USER_ID") { builder ->
+    builder.alertButtonText = android.R.color.holo_orange_dark
+    builder.accentColor = android.R.color.holo_orange_light
+}
+
+TchekSdk.configure(
+    context = this,
+    key = "6d52f1de4ffda05cb91c7468e5d99714f5bf3b267b2ae9cca8101d7897d2",
+    builder = builder
+)
 ```
 
 # Launch a Shoot Inspect
@@ -106,152 +111,158 @@ OR
 
 # Launch Shoot Inspect at End (useful to launch detection)
 
-```
-let builder = TchekShootInspectBuilder(retryCount: 3, delegate: self) { builder in
-	builder.thumbBg = .brown
-	builder.thumbBorder = .blue
-	builder.thumbBorderBadImage = .orange
-	builder.thumbBorderGoodImage = .green
-	builder.thumbDot = .cyan
-	builder.thumbBorderThickness = 0
-	builder.thumbCorner = 0
+```kotlin
+val builder = TchekShootInspectBuilder(delegate = this, retryCount = 3) { builder ->
+    builder.thumbBg = R.color.holo_orange_dark
+    builder.thumbCorner = 20f
+    builder.thumbDot = R.color.holo_orange_light
+    builder.thumbBorder = R.color.holo_orange_dark
+    builder.thumbBorderThickness = 16f
 
-	builder.btnTuto = .yellow
-	builder.btnTutoText = .cyan
-	builder.tutoPageIndicatorDot = .darkGray
-	builder.tutoPageIndicatorDotSelected = .blue
+    builder.thumbBorderBadImage = R.color.holo_purple
+    builder.thumbBorderGoodImage = R.color.holo_orange_light
 
-	builder.carOverlayGuide = .orange
+    builder.btnTuto = R.color.holo_green_dark
+    builder.btnTutoText = R.color.black
 
-	builder.btnRetake = .yellow
-	builder.btnRetakeText = .cyan
+    builder.btnRetake = R.color.black
+    builder.btnRetakeText = R.color.white
+    builder.previewBg = R.color.holo_red_dark
 
-	builder.previewBg = .orange
+    builder.btnEndNext = R.color.holo_purple
+    builder.btnEndNextText = R.color.black
 
-	builder.btnEndNext = .yellow
-	builder.btnEndNextText = .cyan
+    builder.endBg = R.color.holo_blue_light
+    builder.endNavBarText = R.color.holo_red_light
+    builder.endText = R.color.black
+
+    builder.tutoPageIndicatorDot = R.color.holo_orange_dark
+    builder.tutoPageIndicatorDotSelected = R.color.holo_red_dark
+
+    builder.carOverlayGuide = R.color.holo_orange_dark
 }
 
-let viewController = TchekSdk.shootInspect(builder: builder)
-// OR
-let viewController = TchekSdk.shootInspectEnd(tchekId: "any-tchek-id", builder: builder)
+// Launch shoot inspect
+TchekSdk.shootInspect(activityContext = this, builder = builder)
+// or
+// Launch shoot inspect end to go directly to detection step for an existing tchek scan
+TchekSdk.shootInspectEnd(activityContext = this, tchekScanId = tchekScanId, builder = builder)
 
-// Display the Shoot/Inspect UIViewController
-navigationController.pushViewController(viewController, animated: true)
+startActivity(intent)
 ```
 
 # Launch a Fast Track
 
-```
-let builder = TchekFastTrackBuilder(tchekId: "any-tchek-id", delegate: self) { builder in
-	builder.navBarBg = .purple
-	builder.navBarText = .red
-	builder.fastTrackBg = .lightGray
-	builder.fastTrackText = .purple
-	builder.fastTrackPhotoAngle = .red
-	builder.fastTrackPhotoAngleText = .orange
-	builder.cardBg = .purple
+```kotlin
+val builder = TchekFastTrackBuilder(tchekScanId = tchekScanId, delegate = this) { builder ->
+    builder.navBarBg = R.color.holo_blue_light
+    builder.navBarText = R.color.holo_red_dark
 
-	builder.damagesListBg = .purple
-	builder.damagesListText = .red
-	builder.damageCellText = .white
-	builder.damageCellBorder = .red
+    builder.fastTrackBg = R.color.holo_purple
+    builder.fastTrackPhotoAngle = R.color.holo_blue_light
+    builder.fastTrackPhotoAngleText = R.color.holo_blue_light
+    builder.fastTrackText = R.color.holo_orange_dark
 
-	builder.vehiclePatternStroke = .white
-	builder.vehiclePatternDamageFill = .orange
-	builder.vehiclePatternDamageStoke = .red
+    builder.btnAddExtraDamage = R.color.holo_orange_dark
+    builder.btnAddExtraDamageText = R.color.holo_purple
 
-	builder.btnAddExtraDamage = .red
-	builder.btnAddExtraDamageText = .orange
-	builder.btnCreateReport = .yellow
-	builder.btnCreateReportText = .cyan
+    builder.btnCreateReport = R.color.holo_green_dark
+    builder.btnCreateReportText = R.color.black
 
-	builder.btnValidateExtraDamage = .yellow
-	builder.btnValidateExtraDamageText = .cyan
-	builder.btnDeleteExtraDamage = .red
-	builder.btnDeleteExtraDamageText = .white
-	builder.btnEditDamage = .purple
-	builder.btnEditDamageText = .white
+    builder.btnValidateExtraDamage = R.color.black
+    builder.btnValidateExtraDamageText = R.color.white
+
+    builder.btnDeleteExtraDamage = R.color.holo_purple
+    builder.btnDeleteExtraDamageText = R.color.white
+
+    builder.btnEditDamage = R.color.holo_blue_dark
+    builder.btnEditDamageText = R.color.darker_gray
+
+    builder.cardBg = R.color.holo_blue_light
+
+    builder.damageCellBorder = R.color.holo_blue_light
+    builder.damageCellText = R.color.holo_purple
+    builder.damagesListBg = R.color.holo_blue_dark
+    builder.damagesListText = R.color.holo_green_light
+
+    builder.vehiclePatternDamageFill = R.color.holo_orange_dark
+    builder.vehiclePatternDamageStroke = R.color.holo_red_dark
+    builder.vehiclePatternStroke = R.color.holo_green_light
 }
 
-let viewController = TchekSdk.fastTrack(builder: builder)
+val intent = TchekSdk.fastTrack(activityContext = this, builder = builder)
 
-// Display the FastTrack UIViewController
-navigationController.pushViewController(viewController, animated: true)
+startActivity(intent)
 ```
 
 # Display a Report
 
-```
-let builder = TchekReportBuilder(tchekId: "any-tchek-id", delegate: self) { builder in
-	builder.bg = .purple
-	builder.navBarBg = .purple
-	builder.navBarText = .white
-	builder.reportText = .lightGray
+```kotlin
+val builder = TchekReportBuilder(tchekScanId = tchekScanId, delegate = this) { builder ->
+    builder.navBarBg = R.color.holo_blue_light
+    builder.navBarText = R.color.holo_red_dark
 
-	builder.btnPrev = .lightGray
-	builder.btnPrevText = .darkGray
-	builder.btnNext = .black
-	builder.btnNextText = .white
+    builder.bg = R.color.holo_purple
 
-	builder.pagingBg = .purple
-	builder.pagingText = .lightText
-	builder.pagingTextSelected = .white
-	builder.pagingIndicator = .white
+    builder.btnDeleteExtraDamage = R.color.white
+    builder.btnDeleteExtraDamageText = R.color.holo_purple
 
-	builder.textFieldPlaceholderText = .black
-	builder.textFieldUnderline = .lightGray
-	builder.textFieldUnderlineSelected = .black
-	builder.textFieldPlaceholderText = .lightGray
-	builder.textFieldPlaceholderTextSelected = .black
-	builder.textFieldText = .black
+    builder.btnNext = R.color.holo_orange_light
+    builder.btnNextText = R.color.black
 
-	builder.btnValidateSignature = .yellow
-	builder.btnValidateSignatureText = .cyan
+    builder.btnPrev = R.color.holo_red_dark
+    builder.btnPrevText = R.color.white
 
-	builder.damageCellText = .white
-	builder.damageCellBorder = .red
-	builder.vehiclePatternStroke = .white
-	builder.vehiclePatternDamageFill = .orange
+    builder.btnValidateExtraDamage = R.color.holo_blue_dark
+    builder.btnValidateExtraDamageText = R.color.holo_orange_light
 
-	builder.repairCostCellCostBg = .yellow
-	builder.repairCostCellCostText = .cyan
-	builder.repairCostCellText = .red
-	builder.repairCostCellCircleDamageCountBg = .cyan
-	builder.repairCostCellCircleDamageCountText = .white
-	builder.repairCostBtnCostSettingsText = .white
-	builder.repairCostBtnCostSettings = .red
-	builder.repairCostSettingsText = . red
-	builder.btnValidateRepairCostEdit = .blue
-	builder.btnValidateRepairCostEditText = .orange
+    builder.btnDeleteExtraDamage = R.color.holo_purple
+    builder.btnDeleteExtraDamageText = R.color.white
 
-	builder.vehiclePatternStroke = .blue
-	builder.vehiclePatternDamageFill = .orange
-	builder.vehiclePatternDamageStoke = .red
+    builder.btnEditDamage = R.color.holo_blue_dark
+    builder.btnEditDamageText = R.color.darker_gray
 
-	builder.extraDamageBg = .purple
-	builder.btnValidateExtraDamage = .yellow
-	builder.btnValidateExtraDamageText = .cyan
-	builder.btnDeleteExtraDamage = .red
-	builder.btnDeleteExtraDamageText = .white
-	builder.btnEditDamage = .purple
-	builder.btnEditDamageText = .white
+    builder.btnValidateSignature = R.color.holo_green_light
+    builder.btnValidateSignatureText = R.color.darker_gray
+
+    builder.damageCellBorder = R.color.black
+    builder.damageCellText = R.color.holo_blue_dark
+
+    builder.extraDamageBg = R.color.holo_orange_dark
+
+    builder.pagingBg = R.color.holo_green_dark
+    builder.pagingIndicator = R.color.black
+    builder.pagingText = R.color.black
+    builder.pagingTextSelected = R.color.holo_red_dark
+
+    builder.repairCostCellCircleDamageCountBg = R.color.holo_blue_bright
+    builder.repairCostCellCircleDamageCountText = R.color.white
+    builder.repairCostCellCostBg = R.color.holo_orange_dark
+    builder.repairCostCellCostText = R.color.holo_blue_light
+    builder.repairCostCellText = R.color.holo_red_dark
+    builder.repairCostBtnCostSettingsText = R.color.white
+    builder.repairCostBtnCostSettings = R.color.holo_red_dark
+    builder.repairCostSettingsText = R.color.holo_red_dark
+    builder.btnValidateRepairCostEdit = R.color.holo_blue_dark
+    builder.btnValidateRepairCostEditText = R.color.holo_orange_light
+
+    builder.reportText = R.color.holo_orange_dark
+
+    // Unused
+    builder.signatureBg = R.color.holo_blue_bright
+
+    builder.textFieldBorder = R.color.holo_green_light
+    builder.textFieldPlaceHolderText = R.color.darker_gray
+    builder.textFieldText = R.color.black
+
+    builder.vehiclePatternDamageFill = R.color.holo_orange_dark
+    builder.vehiclePatternDamageStroke = R.color.holo_red_dark
+    builder.vehiclePatternStroke = R.color.white
 }
 
-let viewController = TchekSdk.report(builder: builder)
+val intent = TchekSdk.report(activityContext = this, builder = builder)
 
-// Display the report UIViewController
-navigationController.pushViewController(viewController, animated: true)
-```
-
-# Delete a Tchek
-
-```
-TchekSdk.deleteTchek(tchekId: "any-tchek-id") {
-	print("Delete Tchek Failed")
-} onSuccess: {
-	print("Delete Tchek Success")
-}
+startActivity(intent)
 ```
 
 # Complete documentation
