@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DEDEDE"
+    android:orientation="vertical"
+    android:padding="@dimen/AppPadding"
+    tools:context=".CompanionActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/AppPadding">
+
+            <Button
+                android:id="@+id/start_discovery_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/AppPadding"
+                android:text="Start discovery" />
+
+            <Button
+                android:id="@+id/stop_discovery_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop discovery" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/AppPadding">
+
+            <Button
+                android:id="@+id/showCompanionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/AppPadding"
+                android:text="Show" />
+
+            <Button
+                android:id="@+id/detach_companion_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Detach" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/companionState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/AppPadding" />
+
+    <TextView
+        android:id="@+id/attachedCompanion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/AppPadding" />
+
+    <TextView
+        android:id="@+id/availableServices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/AppPadding" />
+
+</LinearLayout>
