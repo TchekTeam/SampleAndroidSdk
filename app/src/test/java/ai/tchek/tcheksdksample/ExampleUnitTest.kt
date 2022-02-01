@@ -1,4 +1,4 @@
-package ai.tchek.sampleapp
+package ai.tchek.tcheksdksample
 
 import org.junit.Test
 
