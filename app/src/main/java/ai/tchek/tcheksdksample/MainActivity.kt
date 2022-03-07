@@ -113,8 +113,6 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
             builder.navBarText = R.color.holo_red_dark
 
             builder.fastTrackBg = R.color.holo_purple
-            builder.fastTrackPhotoAngle = R.color.holo_blue_light
-            builder.fastTrackPhotoAngleText = R.color.holo_blue_light
             builder.fastTrackText = R.color.holo_orange_dark
 
             builder.btnAddExtraDamage = R.color.holo_orange_dark
