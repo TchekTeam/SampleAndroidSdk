@@ -1,10 +1,10 @@
 package ai.tchek.tcheksdksample
 
 import ai.tchek.tcheksdk.business.companion.TchekCompanionManager
-import ai.tchek.tcheksdksample.databinding.ActivityCompanionBinding
 import ai.tchek.tcheksdk.sdk.TchekCompanionBuilder
 import ai.tchek.tcheksdk.sdk.TchekCompanionDelegate
 import ai.tchek.tcheksdk.sdk.TchekSdk
+import ai.tchek.tcheksdksample.databinding.ActivityCompanionBinding
 import android.R
 import android.os.Bundle
 import android.os.Handler
@@ -61,7 +61,6 @@ class CompanionActivity : AppCompatActivity(), TchekCompanionDelegate {
         }
 
         TchekSdk.companionManager(
-            context = this,
             builder = builder,
             onFailure = { Log.d(TAG, "TchekSdk.companionManager: onFailure($it)") },
             onReady = ::onCompanionManagerAvailable
