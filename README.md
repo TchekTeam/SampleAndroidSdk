@@ -50,22 +50,23 @@ dependencies {
     implementation "androidx.core:core-ktx:1.7.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "androidx.exifinterface:exifinterface:1.3.3"
-    implementation "androidx.fragment:fragment-ktx:1.4.0"
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
     implementation "androidx.security:security-crypto:1.1.0-alpha03"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-    def lifecycle_version = "2.4.0"
+    def lifecycle_version = "2.4.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
-    def camerax_version = "1.1.0-beta01"
+    def camerax_version = "1.1.0-beta02"
     implementation "androidx.camera:camera-camera2:$camerax_version"
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     implementation "androidx.camera:camera-view:$camerax_version"
 
-    def nav_version = "2.4.0"
+    def nav_version = "2.4.1"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
@@ -74,15 +75,14 @@ dependencies {
 
     implementation "com.tbuonomo:dotsindicator:4.2"
 
-    implementation 'io.insert-koin:koin-android:3.1.4'
+    implementation 'io.insert-koin:koin-android:3.1.5'
 
     implementation "com.google.android.material:material:1.5.0"
 
-    implementation "io.coil-kt:coil:1.3.2"
+    implementation "io.coil-kt:coil:1.4.0"
 
-    implementation "com.squareup.okhttp3:okhttp:4.9.3"
-
-    implementation "org.jmdns:jmdns:3.5.7"
+    def okhttp_version = "4.9.3"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
 }
 ```
 
