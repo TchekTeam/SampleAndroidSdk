@@ -151,6 +151,12 @@ TchekSdk.shootInspectEnd(activityContext = this, tchekScanId = tchekScanId, buil
 startActivity(intent)
 ```
 
+[Callback](http://doc.tchek.fr/TchekShootInspectDelegate)
+```kotlin
+override fun onDetectionEnd(tchekScanId: String, immatriculation: String?) {
+}
+```
+
 # Launch a Fast Track
 
 ```kotlin
@@ -193,6 +199,11 @@ val builder = TchekFastTrackBuilder(tchekScanId = tchekScanId, delegate = this) 
 val intent = TchekSdk.fastTrack(activityContext = this, builder = builder)
 
 startActivity(intent)
+```
+[Callback](http://doc.tchek.fr/TchekFastTrackBuilderDelegate)
+```kotlin
+override fun onFastTrackEnd(tchekScan: TchekScan) {
+}
 ```
 
 # Display a Report
@@ -263,6 +274,12 @@ val builder = TchekReportBuilder(tchekScanId = tchekScanId, delegate = this) { b
 val intent = TchekSdk.report(activityContext = this, builder = builder)
 
 startActivity(intent)
+```
+
+[Callback](http://doc.tchek.fr/TchekReportBuilderDelegate)
+```kotlin
+override fun onReportUpdate(tchekScan: TchekScan) {
+}
 ```
 
 # Complete documentation
