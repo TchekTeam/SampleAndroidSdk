@@ -38,10 +38,9 @@ Because the TchekSdk is distributed as an aar, you have to manually add most of 
 
 ```groovy
 dependencies {
-    ...
-
+    implementation(name: "TchekSdk-1.5", ext: "aar")
     // Required dependencies for TchekSdk
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
 
     implementation "androidx.activity:activity-ktx:1.4.0"
@@ -61,12 +60,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
-    def camerax_version = "1.1.0-beta02"
+    def camerax_version = "1.1.0-rc01"
     implementation "androidx.camera:camera-camera2:$camerax_version"
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     implementation "androidx.camera:camera-view:$camerax_version"
 
-    def nav_version = "2.4.1"
+    def nav_version = "2.4.2"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
@@ -75,14 +74,15 @@ dependencies {
 
     implementation "com.tbuonomo:dotsindicator:4.2"
 
-    implementation 'io.insert-koin:koin-android:3.1.5'
+    implementation 'io.insert-koin:koin-android:3.1.6'
 
-    implementation "com.google.android.material:material:1.5.0"
+    implementation "com.google.android.material:material:1.6.0"
 
     implementation "io.coil-kt:coil:1.4.0"
 
     def okhttp_version = "4.9.3"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    // Required dependencies for TchekSdk
 }
 ```
 
@@ -165,9 +165,27 @@ val builder = TchekFastTrackBuilder(tchekScanId = tchekScanId, delegate = this) 
     builder.navBarText = R.color.holo_red_dark
 
     builder.fastTrackBg = R.color.holo_purple
-    builder.fastTrackPhotoAngle = R.color.holo_blue_light
-    builder.fastTrackPhotoAngleText = R.color.holo_blue_light
     builder.fastTrackText = R.color.holo_orange_dark
+
+    builder.cardBg = R.color.holo_blue_light
+    builder.pageIndicatorDot = R.color.holo_orange_dark
+    builder.pageIndicatorDotSelected = R.color.holo_red_dark
+
+    builder.damageType = R.color.holo_orange_dark
+    builder.damageTypeText = R.color.white
+    builder.damageLocation = R.color.holo_blue_light
+    builder.damageLocationText = R.color.white
+    builder.damageDate = R.color.white
+    builder.damageDateText = R.color.darker_gray
+    builder.damageNew = R.color.holo_green_dark
+    builder.damageNewText = R.color.holo_green_light
+    builder.damageOld = R.color.holo_red_dark
+    builder.damageOldText = R.color.holo_red_light
+
+    builder.damageCellBorder = R.color.holo_blue_light
+    builder.damageCellText = R.color.holo_purple
+    builder.damagesListBg = R.color.holo_blue_dark
+    builder.damagesListText = R.color.holo_green_light
 
     builder.btnAddExtraDamage = R.color.holo_orange_dark
     builder.btnAddExtraDamageText = R.color.holo_purple
@@ -183,13 +201,6 @@ val builder = TchekFastTrackBuilder(tchekScanId = tchekScanId, delegate = this) 
 
     builder.btnEditDamage = R.color.holo_blue_dark
     builder.btnEditDamageText = R.color.darker_gray
-
-    builder.cardBg = R.color.holo_blue_light
-
-    builder.damageCellBorder = R.color.holo_blue_light
-    builder.damageCellText = R.color.holo_purple
-    builder.damagesListBg = R.color.holo_blue_dark
-    builder.damagesListText = R.color.holo_green_light
 
     builder.vehiclePatternDamageFill = R.color.holo_orange_dark
     builder.vehiclePatternDamageStroke = R.color.holo_red_dark
@@ -259,7 +270,6 @@ val builder = TchekReportBuilder(tchekScanId = tchekScanId, delegate = this) { b
 
     builder.reportText = R.color.holo_orange_dark
 
-    // Unused
     builder.signatureBg = R.color.holo_blue_bright
 
     builder.textFieldBorder = R.color.holo_green_light
@@ -269,6 +279,26 @@ val builder = TchekReportBuilder(tchekScanId = tchekScanId, delegate = this) { b
     builder.vehiclePatternDamageFill = R.color.holo_orange_dark
     builder.vehiclePatternDamageStroke = R.color.holo_red_dark
     builder.vehiclePatternStroke = R.color.white
+
+    builder.newDamageBtnDateBorder = R.color.holo_green_light
+    builder.newDamageSectionText = R.color.holo_orange_dark
+    builder.newDamageCellText = R.color.black
+    builder.newDamageOldCompareButton = R.color.holo_purple
+    builder.newDamageOldCompareButtonText = R.color.white
+    builder.newDamageOldCancelButton = R.color.holo_orange_light
+    builder.newDamageOldTitle = R.color.holo_blue_dark
+    builder.newDamageOldText = R.color.black
+
+    builder.damageType = R.color.holo_orange_dark
+    builder.damageTypeText = R.color.white
+    builder.damageLocation = R.color.holo_blue_light
+    builder.damageLocationText = R.color.white
+    builder.damageDate = R.color.white
+    builder.damageDateText = R.color.darker_gray
+    builder.damageNew = R.color.holo_green_dark
+    builder.damageNewText = R.color.holo_green_light
+    builder.damageOld = R.color.holo_red_dark
+    builder.damageOldText = R.color.holo_red_light
 }
 
 val intent = TchekSdk.report(activityContext = this, builder = builder)

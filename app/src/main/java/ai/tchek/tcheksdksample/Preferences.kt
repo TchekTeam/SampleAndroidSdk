@@ -25,14 +25,14 @@ val DataStore<Preferences>.previousScansFlow: Flow<List<SampleTchekScan>>
         } ?: emptyList()
     }
 
-suspend fun DataStore<Preferences>.saveSampleScans(sampleTchekScans: List<SampleTchekScan>) = edit {
+internal suspend fun DataStore<Preferences>.saveSampleScans(sampleTchekScans: List<SampleTchekScan>) = edit {
     val serialized = Json.encodeToString(sampleTchekScans)
     it[previousScansKey] = serialized
 }
 
-private inline fun <T> tryOrNull(tryBlock: () -> T): T? =
+internal inline fun <reified T : Any> tryOrNull(tryBlock: () -> T): T? =
     try {
         tryBlock.invoke()
-    } catch (exception: Exception) {
+    } catch (ex: Exception) {
         null
     }
