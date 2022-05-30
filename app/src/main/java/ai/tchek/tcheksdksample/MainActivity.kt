@@ -4,12 +4,16 @@ import ai.tchek.tcheksdk.domain.TchekScan
 import ai.tchek.tcheksdk.sdk.*
 import ai.tchek.tcheksdksample.databinding.ActivityMainBinding
 import android.R
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -45,6 +49,7 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
             actionConfigure()
         }
         viewBinding.btnShootInspect.setOnClickListener { shootInspect() }
+        viewBinding.btnReportUrl.setOnClickListener { getReportUrl() }
         viewBinding.scansRecyclerView.adapter = adapter
 
         CoroutineScope(coroutineContext).launch {
@@ -59,6 +64,31 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
         }
 
         configure(false)
+
+        viewBinding.txtFieldSSO.setText("STCHEK")
+        viewBinding.txtFieldTchekId.setText("oy1g8JVThA")
+    }
+
+    private fun getReportUrl() {
+        val tchekId = viewBinding.txtFieldTchekId.text?.toString() ?: ""
+        TchekSdk.getReportUrl(tchekId = tchekId,
+            validity = 1,
+            cost = false,
+            onFailure = { error ->
+                Toast.makeText(this, "Error: $error", Toast.LENGTH_SHORT).show()
+            },
+            onSuccess = { url ->
+                MaterialAlertDialogBuilder(this)
+                    .setMessage(url)
+                    .setCancelable(true)
+                    .setNeutralButton("OK", null)
+                    .setPositiveButton("Open in Browser") { dialog, _ ->
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        startActivity(intent)
+                        dialog.dismiss()
+                    }
+                    .show()
+            })
     }
 
     private fun updateAdapterAndPreferences() {

@@ -50,6 +50,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/AppPadding_Small"
                 android:text="Shoot Inspect" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReportUrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/AppPadding_Small"
+                android:text="Get Report URL" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtFieldTchekId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="TchekId" />
         </LinearLayout>
     </HorizontalScrollView>
 
