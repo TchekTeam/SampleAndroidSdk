@@ -3,7 +3,7 @@
 **[Installation](https://github.com/sofianetchek/sample_android_sdk/blob/main/README.md#installation)**<br><br>
 **[Prerequisites](https://github.com/sofianetchek/sample_android_sdk/blob/main/README.md#prerequisites)**<br><br>
 **[Usage](https://github.com/sofianetchek/sample_android_sdk/blob/main/README.md#usage)**<br><br>
-**[Documentation](https://github.com/sofianetchek/sample_android_sdk/blob/main/README.md#complete-documentation)**<br>
+**[UI Style](https://github.com/sofianetchek/sample_android_sdk/blob/main/README.md#ui-style)**<br>
 _________________
 
 # Installation
@@ -38,7 +38,7 @@ Because the TchekSdk is distributed as an aar, you have to manually add most of 
 
 ```groovy
 dependencies {
-    implementation(name: "TchekSdk-1.5", ext: "aar")
+    implementation(name: "TchekSdk-1.6.1", ext: "aar")
     // Required dependencies for TchekSdk
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
@@ -82,6 +82,10 @@ dependencies {
 
     def okhttp_version = "4.9.3"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+
+    implementation('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
     // Required dependencies for TchekSdk
 }
 ```
@@ -93,14 +97,29 @@ dependencies {
 In order to use the TchekSdk, you must first call the `configure()` method as follows
 
 ```kotlin
-val builder = TchekBuilder(userId = "SAMPLE_USER_ID") { builder ->
+val builder = TchekBuilder(userId = "USER_ID") { builder ->
     builder.alertButtonText = android.R.color.holo_orange_dark
     builder.accentColor = android.R.color.holo_orange_light
+    builder.statusBarColor = android.R.color.holo_orange_dark
 }
 
+// with SSO Key
+TchekSdk.configure(
+    context = this,
+    keySSO = viewBinding.txtFieldSSO.text?.toString() ?: "",
+    onCompletion = { tchekId ->
+        // TODO
+    },
+    builder = builder
+)
+
+// or TchekSDK Key
 TchekSdk.configure(
     context = this,
     key = "6d52f1de4ffda05cb91c7468e5d99714f5bf3b267b2ae9cca8101d7897d2",
+    onCompletion = {
+        // TODO: socket subscriber...
+    },
     builder = builder
 )
 ```
@@ -114,32 +133,7 @@ OR
 ```kotlin
 val builder = TchekShootInspectBuilder(delegate = this, retryCount = 3) { builder ->
     builder.thumbBg = R.color.holo_orange_dark
-    builder.thumbCorner = 20f
-    builder.thumbDot = R.color.holo_orange_light
-    builder.thumbBorder = R.color.holo_orange_dark
-    builder.thumbBorderThickness = 16f
-
-    builder.thumbBorderBadImage = R.color.holo_purple
-    builder.thumbBorderGoodImage = R.color.holo_orange_light
-
-    builder.btnTuto = R.color.holo_green_dark
-    builder.btnTutoText = R.color.black
-
-    builder.btnRetake = R.color.black
-    builder.btnRetakeText = R.color.white
-    builder.previewBg = R.color.holo_red_dark
-
-    builder.btnEndNext = R.color.holo_purple
-    builder.btnEndNextText = R.color.black
-
-    builder.endBg = R.color.holo_blue_light
-    builder.endNavBarText = R.color.holo_red_light
-    builder.endText = R.color.black
-
-    builder.tutoPageIndicatorDot = R.color.holo_orange_dark
-    builder.tutoPageIndicatorDotSelected = R.color.holo_red_dark
-
-    builder.carOverlayGuide = R.color.holo_orange_dark
+    ...
 }
 
 // Launch shoot inspect
@@ -151,7 +145,8 @@ TchekSdk.shootInspectEnd(activityContext = this, tchekScanId = tchekScanId, buil
 startActivity(intent)
 ```
 
-[Callback](http://doc.tchek.fr/TchekShootInspectDelegate)
+* Callback
+
 ```kotlin
 override fun onDetectionEnd(tchekScanId: String, immatriculation: String?) {
 }
@@ -162,56 +157,16 @@ override fun onDetectionEnd(tchekScanId: String, immatriculation: String?) {
 ```kotlin
 val builder = TchekFastTrackBuilder(tchekScanId = tchekScanId, delegate = this) { builder ->
     builder.navBarBg = R.color.holo_blue_light
-    builder.navBarText = R.color.holo_red_dark
-
-    builder.fastTrackBg = R.color.holo_purple
-    builder.fastTrackText = R.color.holo_orange_dark
-
-    builder.cardBg = R.color.holo_blue_light
-    builder.pageIndicatorDot = R.color.holo_orange_dark
-    builder.pageIndicatorDotSelected = R.color.holo_red_dark
-
-    builder.damageType = R.color.holo_orange_dark
-    builder.damageTypeText = R.color.white
-    builder.damageLocation = R.color.holo_blue_light
-    builder.damageLocationText = R.color.white
-    builder.damageDate = R.color.white
-    builder.damageDateText = R.color.darker_gray
-    builder.damageNew = R.color.holo_green_dark
-    builder.damageNewText = R.color.holo_green_light
-    builder.damageOld = R.color.holo_red_dark
-    builder.damageOldText = R.color.holo_red_light
-
-    builder.damageCellBorder = R.color.holo_blue_light
-    builder.damageCellText = R.color.holo_purple
-    builder.damagesListBg = R.color.holo_blue_dark
-    builder.damagesListText = R.color.holo_green_light
-
-    builder.btnAddExtraDamage = R.color.holo_orange_dark
-    builder.btnAddExtraDamageText = R.color.holo_purple
-
-    builder.btnCreateReport = R.color.holo_green_dark
-    builder.btnCreateReportText = R.color.black
-
-    builder.btnValidateExtraDamage = R.color.black
-    builder.btnValidateExtraDamageText = R.color.white
-
-    builder.btnDeleteExtraDamage = R.color.holo_purple
-    builder.btnDeleteExtraDamageText = R.color.white
-
-    builder.btnEditDamage = R.color.holo_blue_dark
-    builder.btnEditDamageText = R.color.darker_gray
-
-    builder.vehiclePatternDamageFill = R.color.holo_orange_dark
-    builder.vehiclePatternDamageStroke = R.color.holo_red_dark
-    builder.vehiclePatternStroke = R.color.holo_green_light
+    ...
 }
 
 val intent = TchekSdk.fastTrack(activityContext = this, builder = builder)
 
 startActivity(intent)
 ```
-[Callback](http://doc.tchek.fr/TchekFastTrackBuilderDelegate)
+
+* Callback
+
 ```kotlin
 override fun onFastTrackEnd(tchekScan: TchekScan) {
 }
@@ -222,83 +177,7 @@ override fun onFastTrackEnd(tchekScan: TchekScan) {
 ```kotlin
 val builder = TchekReportBuilder(tchekScanId = tchekScanId, delegate = this) { builder ->
     builder.navBarBg = R.color.holo_blue_light
-    builder.navBarText = R.color.holo_red_dark
-
-    builder.bg = R.color.holo_purple
-
-    builder.btnDeleteExtraDamage = R.color.white
-    builder.btnDeleteExtraDamageText = R.color.holo_purple
-
-    builder.btnNext = R.color.holo_orange_light
-    builder.btnNextText = R.color.black
-
-    builder.btnPrev = R.color.holo_red_dark
-    builder.btnPrevText = R.color.white
-
-    builder.btnValidateExtraDamage = R.color.holo_blue_dark
-    builder.btnValidateExtraDamageText = R.color.holo_orange_light
-
-    builder.btnDeleteExtraDamage = R.color.holo_purple
-    builder.btnDeleteExtraDamageText = R.color.white
-
-    builder.btnEditDamage = R.color.holo_blue_dark
-    builder.btnEditDamageText = R.color.darker_gray
-
-    builder.btnValidateSignature = R.color.holo_green_light
-    builder.btnValidateSignatureText = R.color.darker_gray
-
-    builder.damageCellBorder = R.color.black
-    builder.damageCellText = R.color.holo_blue_dark
-
-    builder.extraDamageBg = R.color.holo_orange_dark
-
-    builder.pagingBg = R.color.holo_green_dark
-    builder.pagingIndicator = R.color.black
-    builder.pagingText = R.color.black
-    builder.pagingTextSelected = R.color.holo_red_dark
-
-    builder.repairCostCellCircleDamageCountBg = R.color.holo_blue_bright
-    builder.repairCostCellCircleDamageCountText = R.color.white
-    builder.repairCostCellCostBg = R.color.holo_orange_dark
-    builder.repairCostCellCostText = R.color.holo_blue_light
-    builder.repairCostCellText = R.color.holo_red_dark
-    builder.repairCostBtnCostSettingsText = R.color.white
-    builder.repairCostBtnCostSettings = R.color.holo_red_dark
-    builder.repairCostSettingsText = R.color.holo_red_dark
-    builder.btnValidateRepairCostEdit = R.color.holo_blue_dark
-    builder.btnValidateRepairCostEditText = R.color.holo_orange_light
-
-    builder.reportText = R.color.holo_orange_dark
-
-    builder.signatureBg = R.color.holo_blue_bright
-
-    builder.textFieldBorder = R.color.holo_green_light
-    builder.textFieldPlaceHolderText = R.color.darker_gray
-    builder.textFieldText = R.color.black
-
-    builder.vehiclePatternDamageFill = R.color.holo_orange_dark
-    builder.vehiclePatternDamageStroke = R.color.holo_red_dark
-    builder.vehiclePatternStroke = R.color.white
-
-    builder.newDamageBtnDateBorder = R.color.holo_green_light
-    builder.newDamageSectionText = R.color.holo_orange_dark
-    builder.newDamageCellText = R.color.black
-    builder.newDamageOldCompareButton = R.color.holo_purple
-    builder.newDamageOldCompareButtonText = R.color.white
-    builder.newDamageOldCancelButton = R.color.holo_orange_light
-    builder.newDamageOldTitle = R.color.holo_blue_dark
-    builder.newDamageOldText = R.color.black
-
-    builder.damageType = R.color.holo_orange_dark
-    builder.damageTypeText = R.color.white
-    builder.damageLocation = R.color.holo_blue_light
-    builder.damageLocationText = R.color.white
-    builder.damageDate = R.color.white
-    builder.damageDateText = R.color.darker_gray
-    builder.damageNew = R.color.holo_green_dark
-    builder.damageNewText = R.color.holo_green_light
-    builder.damageOld = R.color.holo_red_dark
-    builder.damageOldText = R.color.holo_red_light
+    ...
 }
 
 val intent = TchekSdk.report(activityContext = this, builder = builder)
@@ -306,12 +185,72 @@ val intent = TchekSdk.report(activityContext = this, builder = builder)
 startActivity(intent)
 ```
 
-[Callback](http://doc.tchek.fr/TchekReportBuilderDelegate)
+* Callback
+
 ```kotlin
 override fun onReportUpdate(tchekScan: TchekScan) {
 }
 ```
 
-# Complete documentation
+# Socket Subscriber
 
-[Documentation](http://doc.tchek.fr)
+* Subscribe: eg: on configure completion
+
+```kotlin
+tchekSocketManager = TchekSdk.socketManager(TchekScanType.Mobile, null)
+tchekSocketManager?.subscribe(newTchekEmitter)
+tchekSocketManager?.subscribe(detectionFinishedEmitter)
+tchekSocketManager?.subscribe(createReportEmitter)
+tchekSocketManager?.subscribe(deleteTchekEmitter)
+```
+
+* Do not forget to destroy them
+
+```kotlin
+override fun onDestroy() {
+    super.onDestroy()
+    tchekSocketManager?.destroy()
+}
+```
+
+* The Emitter
+
+```kotlin
+private val newTchekEmitter = object : NewTchekEmitter {
+    override fun newTchek(tchek: TchekScan) {
+        Log.d(TAG, "newTchekEmitter-NewTchek-tchek.id: ${tchek.id}, tchek.vehicle?.immat: ${tchek.vehicle?.immat}")
+    }
+}
+
+private val detectionFinishedEmitter = object : DetectionFinishedEmitter {
+    override fun detectionFinished(tchek: TchekScan) {
+        Log.d(TAG, "detectionFinishedEmitter-detectionFinished-tchek.id: ${tchek.id}, tchek.vehicle?.immat: ${tchek.vehicle?.immat}")
+    }
+}
+
+private val createReportEmitter = object : CreateReportEmitter {
+    override fun createReport(tchek: TchekScan) {
+        Log.d(TAG, "createReportEmitter-createReport-tchek.id: ${tchek.id}, tchek.vehicle?.immat: ${tchek.vehicle?.immat}")
+    }
+}
+
+private val deleteTchekEmitter = object : DeleteTchekEmitter {
+    override fun deleteTchek(tchekId: String) {
+        Log.d(TAG, "deleteTchekEmitter-deleteTchek-tchekId: $tchekId")
+    }
+}
+```
+
+# UI Style
+
+1. Shoot Inspect
+
+![](https://github.com/sofianetchek/sample_android_sdk/blob/main/Screenshots/SDK_UI_Style-1-ShootInspect.png?raw=true "")
+
+2. Fast Track
+
+![](https://github.com/sofianetchek/sample_android_sdk/blob/main/Screenshots/SDK_UI_Style-2-FastTrack.png?raw=true "")
+
+3. Report
+
+![](https://github.com/sofianetchek/sample_android_sdk/blob/main/Screenshots/SDK_UI_Style-3-Report.png?raw=true "")

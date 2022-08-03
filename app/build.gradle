@@ -37,7 +37,7 @@ android {
 }
 
 dependencies {
-    implementation(name: "TchekSdk-1.5.1", ext: "aar")
+    implementation(name: "TchekSdk-1.6.1", ext: "aar")
     // Required dependencies for TchekSdk
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
@@ -81,6 +81,10 @@ dependencies {
 
     def okhttp_version = "4.9.3"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+
+    implementation('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
     // Required dependencies for TchekSdk
 
     testImplementation 'junit:junit:4.13.2'

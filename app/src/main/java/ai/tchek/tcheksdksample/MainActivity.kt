@@ -1,7 +1,13 @@
 package ai.tchek.tcheksdksample
 
 import ai.tchek.tcheksdk.domain.TchekScan
+import ai.tchek.tcheksdk.domain.TchekScanType
 import ai.tchek.tcheksdk.sdk.*
+import ai.tchek.tcheksdk.socket.TchekSocketManager
+import ai.tchek.tcheksdk.socket.emitter.CreateReportEmitter
+import ai.tchek.tcheksdk.socket.emitter.DeleteTchekEmitter
+import ai.tchek.tcheksdk.socket.emitter.DetectionFinishedEmitter
+import ai.tchek.tcheksdk.socket.emitter.NewTchekEmitter
 import ai.tchek.tcheksdksample.databinding.ActivityMainBinding
 import android.R
 import android.content.Intent
@@ -32,6 +38,8 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
     private val handler = Handler(Looper.getMainLooper())
     private val currentScans = mutableListOf<SampleTchekScan>()
 
+    private var tchekSocketManager: TchekSocketManager? = null
+
     private val viewBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val adapter = MainAdapter(
@@ -41,6 +49,31 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
         data = emptyList()
     )
 
+    private val newTchekEmitter = object : NewTchekEmitter {
+        override fun newTchek(tchek: TchekScan) {
+            Log.d(TAG, "newTchekEmitter-NewTchek-tchek.id: ${tchek.id}, tchek.vehicle?.immat: ${tchek.vehicle?.immat}")
+            addNewScan(tchek.id)
+        }
+    }
+
+    private val detectionFinishedEmitter = object : DetectionFinishedEmitter {
+        override fun detectionFinished(tchek: TchekScan) {
+            Log.d(TAG, "detectionFinishedEmitter-detectionFinished-tchek.id: ${tchek.id}, tchek.vehicle?.immat: ${tchek.vehicle?.immat}")
+        }
+    }
+
+    private val createReportEmitter = object : CreateReportEmitter {
+        override fun createReport(tchek: TchekScan) {
+            Log.d(TAG, "createReportEmitter-createReport-tchek.id: ${tchek.id}, tchek.vehicle?.immat: ${tchek.vehicle?.immat}")
+        }
+    }
+
+    private val deleteTchekEmitter = object : DeleteTchekEmitter {
+        override fun deleteTchek(tchekId: String) {
+            Log.d(TAG, "deleteTchekEmitter-deleteTchek-tchekId: $tchekId")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
@@ -48,8 +81,12 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
         viewBinding.btnInit.setOnClickListener {
             actionConfigure()
         }
-        viewBinding.btnShootInspect.setOnClickListener { shootInspect() }
-        viewBinding.btnReportUrl.setOnClickListener { getReportUrl() }
+        viewBinding.btnShootInspect.setOnClickListener {
+            shootInspect()
+        }
+        viewBinding.btnReportUrl.setOnClickListener {
+            getReportUrl()
+        }
         viewBinding.scansRecyclerView.adapter = adapter
 
         CoroutineScope(coroutineContext).launch {
@@ -64,14 +101,17 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
         }
 
         configure(false)
+    }
 
-        viewBinding.txtFieldSSO.setText("STCHEK")
-        viewBinding.txtFieldTchekId.setText("oy1g8JVThA")
+    override fun onDestroy() {
+        super.onDestroy()
+        tchekSocketManager?.destroy()
     }
 
     private fun getReportUrl() {
         val tchekId = viewBinding.txtFieldTchekId.text?.toString() ?: ""
-        TchekSdk.getReportUrl(tchekId = tchekId,
+        TchekSdk.getReportUrl(
+            tchekId = tchekId,
             validity = 1,
             cost = false,
             onFailure = { error ->
@@ -119,6 +159,11 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
 
     private fun actionConfigure() {
         configure(false)
+        val builder = TchekBuilder { builder ->
+            builder.alertButtonText = R.color.holo_orange_dark
+            builder.accentColor = R.color.holo_orange_light
+            builder.statusBarColor = android.R.color.holo_orange_dark
+        }
         if (viewBinding.switchSSO.isChecked) {
             TchekSdk.configure(
                 context = this,
@@ -126,25 +171,35 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
                 onCompletion = { tchekId ->
                     Log.d(TAG, "configure-tchekId: $tchekId")
                     configure(true)
+                    socketSubscriber()
                 },
-                TchekBuilder { builder ->
-                    builder.alertButtonText = R.color.holo_orange_dark
-                    builder.accentColor = R.color.holo_orange_light
-                })
+                builder = builder
+            )
         } else {
             TchekSdk.configure(
                 context = this,
                 key = "6d52f1de4ffda05cb91c7468e5d99714f5bf3b267b2ae9cca8101d7897d2",
-                TchekBuilder(userId = "USER_ID") { builder ->
-                    builder.alertButtonText = R.color.holo_orange_dark
-                    builder.accentColor = R.color.holo_orange_light
-                })
+                onCompletion = {
+                    Log.d(TAG, "configure")
+                    configure(true)
+                    socketSubscriber()
+                },
+                builder = builder
+            )
             configure(true)
         }
     }
 
+    private fun socketSubscriber() {
+        tchekSocketManager = TchekSdk.socketManager(TchekScanType.Mobile, null)
+        tchekSocketManager?.subscribe(newTchekEmitter)
+        tchekSocketManager?.subscribe(detectionFinishedEmitter)
+        tchekSocketManager?.subscribe(createReportEmitter)
+        tchekSocketManager?.subscribe(deleteTchekEmitter)
+    }
+
     private fun shootInspect(tchekScanId: String? = null) {
-        val builder = TchekShootInspectBuilder(delegate = this, retryCount = 3) { builder ->
+        val builder = TchekShootInspectBuilder(retryCount = 3, delegate = this) { builder ->
             builder.thumbBg = R.color.holo_orange_dark
             builder.thumbCorner = 20f
             builder.thumbDot = R.color.holo_orange_light
@@ -226,9 +281,10 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
             builder.btnEditDamage = R.color.holo_blue_dark
             builder.btnEditDamageText = R.color.darker_gray
 
-            builder.vehiclePatternDamageFill = R.color.holo_orange_dark
+            builder.vehiclePatternDamageFill = R.color.holo_red_light
+            builder.vehiclePatternOldDamageFill = R.color.holo_green_light
             builder.vehiclePatternDamageStroke = R.color.holo_red_dark
-            builder.vehiclePatternStroke = R.color.holo_green_light
+            builder.vehiclePatternStroke = R.color.white
         })
 
         startActivity(intent)
@@ -285,14 +341,14 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
 
             builder.reportText = R.color.holo_orange_dark
 
-            // Unused
-            builder.signatureBg = R.color.holo_blue_bright
+            builder.textFieldUnderline = R.color.holo_red_light
+            builder.textFieldUnderlineSelected = R.color.white
+            builder.textFieldPlaceholderText = R.color.holo_green_light
+            builder.textFieldPlaceholderTextSelected = R.color.black
+            builder.textFieldText = R.color.holo_orange_dark
 
-            builder.textFieldBorder = R.color.holo_green_light
-            builder.textFieldPlaceHolderText = R.color.darker_gray
-            builder.textFieldText = R.color.black
-
-            builder.vehiclePatternDamageFill = R.color.holo_orange_dark
+            builder.vehiclePatternDamageFill = R.color.holo_red_light
+            builder.vehiclePatternOldDamageFill = R.color.holo_green_light
             builder.vehiclePatternDamageStroke = R.color.holo_red_dark
             builder.vehiclePatternStroke = R.color.white
 
@@ -320,18 +376,25 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
         startActivity(intent)
     }
 
+    private fun addNewScan(tchekScanId: String) {
+        val scanExist = dynamicTchekScans.firstOrNull { it.tchekScanId == tchekScanId }
+        if (scanExist == null) {
+            dynamicTchekScans.add(0, SampleTchekScan(tchekScanId, "By Me", System.currentTimeMillis()))
+            handler.post {
+                updateAdapterAndPreferences()
+            }
+        }
+    }
+
     // region delegate TchekShootInspectDelegate
     override fun onDetectionEnd(tchekScanId: String, immatriculation: String?) {
         Log.d(TAG, "onDetectionEnd() called with: tchekScanId = $tchekScanId, immatriculation = $immatriculation")
-        dynamicTchekScans.add(0, SampleTchekScan(tchekScanId, "By Me", System.currentTimeMillis()))
-        handler.post {
-            updateAdapterAndPreferences()
-        }
+        addNewScan(tchekScanId)
     }
     // endregion
 
     // region delegate TchekFastTrackDelegate
-    override fun onFastTrackEnd(tchekScan: TchekScan) {
+    override fun onReportCreated(tchekScan: TchekScan) {
         Log.d(TAG, "onFastTrackEnd() called with: tchekScan = $tchekScan")
     }
     // endregion
