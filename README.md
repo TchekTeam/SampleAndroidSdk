@@ -192,6 +192,28 @@ override fun onReportUpdate(tchekScan: TchekScan) {
 }
 ```
 
+# Load All Tchek
+
+```kotlin
+TchekSdk.loadAllTchek(
+    type = TchekScanType.Mobile,
+    deviceId = null,
+    search = null,
+    limit = 50,
+    page = 0,
+    onFailure = { error ->
+        Log.d(TAG, "error: $error")
+    },
+    onSuccess = { tcheks ->
+        tcheks.forEach { tchek ->
+            Log.d(TAG, "tchek.id: ${tchek.id}, tchek.status: ${tchek.status}")
+        }
+    }
+)
+```
+
+![](https://github.com/sofianetchek/sample_android_sdk/blob/main/Screenshots/loadAllTchek.png?raw=true "")
+
 # Socket Subscriber
 
 * Subscribe: eg: on configure completion
