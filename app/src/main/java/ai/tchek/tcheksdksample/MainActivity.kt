@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
     }
 
     private fun shootInspect(tchekScanId: String? = null) {
-        val builder = TchekShootInspectBuilder(retryCount = 3, delegate = this) { builder ->
+        val builder = TchekShootInspectBuilder(delegate = this) { builder ->
             builder.thumbBg = R.color.holo_orange_dark
             builder.thumbCorner = 20f
             builder.thumbDot = R.color.holo_orange_light
