@@ -38,23 +38,23 @@ Because the TchekSdk is distributed as an aar, you have to manually add most of 
 
 ```groovy
 dependencies {
-    implementation(name: "TchekSdk-1.6.1", ext: "aar")
+    implementation(name: "TchekSdk-1.7", ext: "aar")
     // Required dependencies for TchekSdk
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
 
-    implementation "androidx.activity:activity-ktx:1.4.0"
-    implementation "androidx.appcompat:appcompat:1.4.1"
+    implementation "androidx.activity:activity-ktx:1.6.0"
+    implementation "androidx.appcompat:appcompat:1.5.1"
     implementation "androidx.asynclayoutinflater:asynclayoutinflater:1.0.0"
-    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.core:core-ktx:1.9.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "androidx.exifinterface:exifinterface:1.3.3"
-    implementation "androidx.fragment:fragment-ktx:1.4.1"
+    implementation "androidx.fragment:fragment-ktx:1.5.3"
     implementation "androidx.security:security-crypto:1.1.0-alpha03"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-    def lifecycle_version = "2.4.1"
+    def lifecycle_version = "2.5.1"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
@@ -65,22 +65,23 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     implementation "androidx.camera:camera-view:$camerax_version"
 
-    def nav_version = "2.4.2"
+    def nav_version = "2.5.2"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     implementation "eu.davidea:flexible-adapter:5.1.0"
     implementation "eu.davidea:flexible-adapter-ui:1.0.0"
 
-    implementation "com.tbuonomo:dotsindicator:4.2"
+    implementation "com.tbuonomo:dotsindicator:4.3"
 
     implementation 'io.insert-koin:koin-android:3.1.6'
 
-    implementation "com.google.android.material:material:1.6.0"
+    implementation "com.google.android.material:material:1.6.1"
 
     implementation "io.coil-kt:coil:1.4.0"
+    implementation "io.coil-kt:coil-svg:1.4.0"
 
-    def okhttp_version = "4.9.3"
+    def okhttp_version = "4.10.0"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
 
     implementation('io.socket:socket.io-client:2.0.0') {
@@ -131,7 +132,7 @@ OR
 # Launch Shoot Inspect at End (useful to launch detection)
 
 ```kotlin
-val builder = TchekShootInspectBuilder(delegate = this, retryCount = 3) { builder ->
+val builder = TchekShootInspectBuilder(delegate = this) { builder ->
     builder.thumbBg = R.color.holo_orange_dark
     ...
 }
@@ -168,7 +169,7 @@ startActivity(intent)
 * Callback
 
 ```kotlin
-override fun onFastTrackEnd(tchekScan: TchekScan) {
+override fun onReportCreated(tchekScan: TchekScan) {
 }
 ```
 
