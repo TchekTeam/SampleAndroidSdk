@@ -168,8 +168,16 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
             TchekSdk.configure(
                 context = this,
                 keySSO = viewBinding.txtFieldSSO.text?.toString() ?: "",
-                onCompletion = { tchekId ->
-                    Log.d(TAG, "configure-tchekId: $tchekId")
+                onFailure = { apiError ->
+                    handler.post {
+                        Toast.makeText(this@MainActivity, "configure error: $apiError", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                onSuccess = { tchekSSO ->
+                    Log.d(TAG, "configure-tchekSSO: $tchekSSO")
+                    handler.post {
+                        Toast.makeText(this@MainActivity, "configure OK, with tchekId: ${tchekSSO.tchekId}", Toast.LENGTH_SHORT).show()
+                    }
                     configure(true)
                     socketSubscriber()
                 },
@@ -387,6 +395,10 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
     }
 
     // region delegate TchekShootInspectDelegate
+    override fun onDetectionInProgress() {
+        Log.d(TAG, "onDetectionInProgress")
+    }
+
     override fun onDetectionEnd(tchekScanId: String, immatriculation: String?) {
         Log.d(TAG, "onDetectionEnd() called with: tchekScanId = $tchekScanId, immatriculation = $immatriculation")
         addNewScan(tchekScanId)

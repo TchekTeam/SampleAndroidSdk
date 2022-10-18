@@ -108,7 +108,10 @@ val builder = TchekBuilder(userId = "USER_ID") { builder ->
 TchekSdk.configure(
     context = this,
     keySSO = viewBinding.txtFieldSSO.text?.toString() ?: "",
-    onCompletion = { tchekId ->
+    onFailure = { apiError ->
+        // TODO
+    },
+    onSuccess = { tchekSSO ->
         // TODO
     },
     builder = builder
@@ -149,6 +152,9 @@ startActivity(intent)
 * Callback
 
 ```kotlin
+override fun onDetectionInProgress() {
+}
+
 override fun onDetectionEnd(tchekScanId: String, immatriculation: String?) {
 }
 ```
