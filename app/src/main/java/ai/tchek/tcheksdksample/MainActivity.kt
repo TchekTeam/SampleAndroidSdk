@@ -331,6 +331,10 @@ class MainActivity : AppCompatActivity(), TchekShootInspectDelegate, TchekFastTr
 
             builder.extraDamageBg = R.color.holo_orange_dark
 
+            builder.btnAddExtraDamagePlusIcon = R.color.holo_red_dark
+            builder.btnAddExtraDamageBg = R.color.holo_blue_light
+            builder.btnAddExtraDamageBgPressed = R.color.holo_blue_dark
+
             builder.pagingBg = R.color.holo_green_dark
             builder.pagingIndicator = R.color.black
             builder.pagingText = R.color.black
