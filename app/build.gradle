@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    implementation(name: "TchekSdk-1.7.6", ext: "aar")
+    implementation(name: "TchekSdk-1.7.7", ext: "aar")
     // Required dependencies for TchekSdk
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
